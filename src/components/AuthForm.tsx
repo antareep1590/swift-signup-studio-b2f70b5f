@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,6 +35,7 @@ interface AuthFormProps {
 }
 
 export const AuthForm = ({ mode, onToggleMode }: AuthFormProps) => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   
   const {
@@ -48,15 +50,38 @@ export const AuthForm = ({ mode, onToggleMode }: AuthFormProps) => {
 
   const onSubmit = async (data: LoginFormData | SignupFormData) => {
     try {
-      console.log("Form submitted:", data);
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // Store user session in localStorage
+      localStorage.setItem('user', JSON.stringify({
+        email: data.email,
+        name: 'name' in data ? data.name : data.email.split('@')[0]
+      }));
+      
       toast.success(mode === "login" ? "Welcome back!" : "Account created successfully!");
+      
+      // Redirect to onboarding
+      setTimeout(() => {
+        navigate('/onboarding/basic-info');
+      }, 500);
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
     }
   };
 
   const handleSocialLogin = (provider: string) => {
-    toast.info(`${provider} login coming soon!`);
+    // Simulate social login
+    localStorage.setItem('user', JSON.stringify({
+      email: `user@${provider.toLowerCase()}.com`,
+      name: `${provider} User`
+    }));
+    
+    toast.success(`${provider} login successful!`);
+    
+    setTimeout(() => {
+      navigate('/onboarding/basic-info');
+    }, 500);
   };
 
   return (
