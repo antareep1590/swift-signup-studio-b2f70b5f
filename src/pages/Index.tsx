@@ -7,7 +7,7 @@ const Index = () => {
       <div className="text-center">
         <h1 className="mb-4 text-4xl font-bold">Welcome to VEWMEE</h1>
         <p className="text-xl text-muted-foreground mb-8">Your white label creator platform</p>
-        <Link to="/auth">
+        <Link to="/onboarding/basic-info">
           <Button size="lg">Get Started</Button>
         </Link>
       </div>
