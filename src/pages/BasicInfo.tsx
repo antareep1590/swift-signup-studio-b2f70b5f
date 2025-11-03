@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -60,6 +61,7 @@ const PRESET_COLORS = [
 ];
 
 export default function BasicInfo() {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [platformName, setPlatformName] = useState("");
   const [selectedColor, setSelectedColor] = useState(PRESET_COLORS[0]);
@@ -464,10 +466,11 @@ export default function BasicInfo() {
 
         {/* Action Buttons */}
         <div className="flex justify-between items-center">
-          <Button variant="ghost">Back</Button>
+          <Button variant="ghost" onClick={() => navigate("/auth")}>Back</Button>
           <Button 
             className="bg-primary hover:bg-primary/90"
             disabled={!!nameError || Object.keys(socialErrors).length > 0}
+            onClick={() => navigate("/onboarding/preview")}
           >
             Save & Next
           </Button>

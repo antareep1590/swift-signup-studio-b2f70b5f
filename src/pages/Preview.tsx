@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Monitor, Tablet, Smartphone } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { cn } from "@/lib/utils";
 type DeviceType = "desktop" | "tablet" | "mobile";
 
 const Preview = () => {
+  const navigate = useNavigate();
   const [device, setDevice] = useState<DeviceType>("desktop");
 
   const getDeviceWidth = () => {
@@ -244,10 +246,10 @@ const Preview = () => {
         </Tabs>
 
         <div className="flex justify-between mt-8">
-          <Button variant="outline" onClick={() => window.history.back()}>
+          <Button variant="outline" onClick={() => navigate("/onboarding/basic-info")}>
             Back
           </Button>
-          <Button onClick={() => window.location.href = "/onboarding/payment"}>
+          <Button onClick={() => navigate("/onboarding/payment")}>
             Save & Next
           </Button>
         </div>
