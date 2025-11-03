@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import BasicInfo from "./pages/BasicInfo";
 import Preview from "./pages/Preview";
 import Payment from "./pages/Payment";
+import ConnectDomain from "./pages/ConnectDomain";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/onboarding/basic-info" element={<BasicInfo />} />
           <Route path="/onboarding/preview" element={<Preview />} />
           <Route path="/onboarding/payment" element={<Payment />} />
+          <Route path="/onboarding/connect-domain" element={<ConnectDomain />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

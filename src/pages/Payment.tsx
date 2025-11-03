@@ -165,8 +165,8 @@ const Payment = () => {
 
       {/* Progress Steps */}
       <div className="container mx-auto px-4 py-6">
-        <div className="flex items-center justify-between max-w-4xl mx-auto">
-          {["Customize Branding", "Preview", "Payment", "Connect Domain", "Stripe Access", "Upload Documents", "Review Website", "Launch"].map((step, idx) => (
+        <div className="flex items-center justify-center gap-4 md:gap-8 max-w-4xl mx-auto">
+          {["Customize Branding", "Preview", "Payment", "Connect Domain", "Stripe Access", "Launch"].map((step, idx) => (
             <div key={step} className="flex flex-col items-center gap-2">
               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium ${
                 idx < 2 
@@ -177,7 +177,7 @@ const Payment = () => {
               }`}>
                 {idx < 2 ? <Check className="h-5 w-5" /> : idx + 1}
               </div>
-              <span className="text-xs text-center max-w-[80px] hidden md:block">{step}</span>
+              <span className="text-xs text-center max-w-[100px] hidden md:block">{step}</span>
             </div>
           ))}
         </div>
