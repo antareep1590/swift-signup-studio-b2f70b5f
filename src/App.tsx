@@ -9,6 +9,8 @@ import BasicInfo from "./pages/BasicInfo";
 import Preview from "./pages/Preview";
 import Payment from "./pages/Payment";
 import ConnectDomain from "./pages/ConnectDomain";
+import StripeAccess from "./pages/StripeAccess";
+import Launch from "./pages/Launch";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +27,8 @@ const App = () => (
           <Route path="/onboarding/preview" element={<Preview />} />
           <Route path="/onboarding/payment" element={<Payment />} />
           <Route path="/onboarding/connect-domain" element={<ConnectDomain />} />
+          <Route path="/onboarding/stripe-access" element={<StripeAccess />} />
+          <Route path="/onboarding/launch" element={<Launch />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
