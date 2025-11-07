@@ -8,56 +8,62 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    /* Minimal, accessible color palette */
+    --background: 0 0% 99%;
+    --foreground: 220 13% 13%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 220 13% 13%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 220 13% 13%;
 
-    --primary: 350 100% 64%;
+    /* Single saturated accent for CTAs and focus */
+    --primary: 262 83% 58%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 15% 96%;
-    --secondary-foreground: 222 47% 11%;
+    /* Light gray surfaces */
+    --secondary: 220 13% 97%;
+    --secondary-foreground: 220 13% 13%;
 
-    --muted: 220 15% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 220 13% 95%;
+    --muted-foreground: 220 9% 46%;
 
-    --accent: 350 100% 97%;
-    --accent-foreground: 350 100% 64%;
+    --accent: 262 90% 97%;
+    --accent-foreground: 262 83% 58%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    /* High-contrast borders */
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 350 100% 64%;
+    --ring: 262 83% 58%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
     
-    --gradient-primary: linear-gradient(135deg, hsl(350 100% 64%) 0%, hsl(10 100% 68%) 100%);
-    --gradient-bg: linear-gradient(135deg, hsl(350 100% 97%) 0%, hsl(220 70% 97%) 100%);
-    --shadow-soft: 0 10px 40px -10px hsl(350 100% 64% / 0.15);
-    --shadow-strong: 0 20px 60px -15px hsl(350 100% 64% / 0.25);
+    /* Minimal gradients */
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(220 13% 98%) 100%);
+    --shadow-minimal: 0 1px 3px 0 hsl(220 13% 13% / 0.08);
+    --shadow-elevated: 0 4px 16px -2px hsl(220 13% 13% / 0.12);
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
+    /* Progress sidebar */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 9% 46%;
+    --sidebar-primary: 220 13% 13%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 262 83% 58%;
+    --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 262 83% 58%;
+    
+    /* Step indicators */
+    --step-incomplete: 220 13% 91%;
+    --step-complete: 262 83% 58%;
+    --step-active: 262 83% 58%;
   }
 
   .dark {
