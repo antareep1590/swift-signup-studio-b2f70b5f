@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import OnboardingLayout from "@/components/OnboardingLayout";
 import { 
   Upload, 
   User, 
@@ -191,40 +192,18 @@ export default function BasicInfo() {
     }, 1500);
   };
 
+  const steps = [
+    { id: 1, name: "Customize Branding", path: "/onboarding/basic-info" },
+    { id: 2, name: "Preview", path: "/onboarding/preview" },
+    { id: 3, name: "Payment", path: "/onboarding/payment" },
+    { id: 4, name: "Connect Domain", path: "/onboarding/connect-domain" },
+    { id: 5, name: "Stripe Access", path: "/onboarding/stripe-access" },
+    { id: 6, name: "Launch", path: "/onboarding/launch" }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/10">
-      {/* Header */}
-      <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <img src="/placeholder.svg" alt="Logo" className="h-8" />
-          </div>
-          <Button variant="ghost" size="sm">
-            <Mail className="mr-2 h-4 w-4" />
-            Logout
-          </Button>
-        </div>
-      </div>
-
-      {/* Progress Steps */}
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex items-center justify-center gap-4 md:gap-8 max-w-4xl mx-auto">
-          {["Customize Branding", "Preview", "Payment", "Connect Domain", "Stripe Access", "Launch"].map((step, idx) => (
-            <div key={step} className="flex flex-col items-center gap-2">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium ${
-                idx === 0 
-                  ? "bg-primary text-primary-foreground" 
-                  : "bg-muted text-muted-foreground"
-              }`}>
-                {idx + 1}
-              </div>
-              <span className="text-xs text-center max-w-[100px] hidden md:block">{step}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <OnboardingLayout currentStep={1} steps={steps}>
+      <div className="container mx-auto px-4 lg:px-8 py-8 max-w-6xl">
         {/* Auto-save indicator */}
         {lastSaved && (
           <div className="flex items-center justify-end gap-2 mb-4 text-sm text-muted-foreground">
@@ -476,6 +455,6 @@ export default function BasicInfo() {
           </Button>
         </div>
       </div>
-    </div>
+    </OnboardingLayout>
   );
 }

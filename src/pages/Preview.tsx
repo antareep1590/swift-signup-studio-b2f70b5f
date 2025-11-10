@@ -4,12 +4,22 @@ import { Monitor, Tablet, Smartphone } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import OnboardingLayout from "@/components/OnboardingLayout";
 
 type DeviceType = "desktop" | "tablet" | "mobile";
 
 const Preview = () => {
   const navigate = useNavigate();
   const [device, setDevice] = useState<DeviceType>("desktop");
+
+  const steps = [
+    { id: 1, name: "Customize Branding", path: "/onboarding/basic-info" },
+    { id: 2, name: "Preview", path: "/onboarding/preview" },
+    { id: 3, name: "Payment", path: "/onboarding/payment" },
+    { id: 4, name: "Connect Domain", path: "/onboarding/connect-domain" },
+    { id: 5, name: "Stripe Access", path: "/onboarding/stripe-access" },
+    { id: 6, name: "Launch", path: "/onboarding/launch" }
+  ];
 
   const getDeviceWidth = () => {
     switch (device) {
@@ -165,24 +175,13 @@ const Preview = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b bg-background">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                <span className="text-primary font-bold">V</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-semibold">Visual Preview</h1>
-                <p className="text-sm text-muted-foreground">Preview your platform design</p>
-              </div>
-            </div>
-          </div>
+    <OnboardingLayout currentStep={2} steps={steps}>
+      <div className="container mx-auto px-4 lg:px-8 py-8">
+        <div className="mb-8">
+          <h1 className="text-2xl font-semibold mb-2">Visual Preview</h1>
+          <p className="text-sm text-muted-foreground">Preview your platform design across different devices</p>
         </div>
-      </header>
 
-      <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="landing" className="space-y-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <TabsList className="w-full md:w-auto justify-start overflow-x-auto">
@@ -254,7 +253,7 @@ const Preview = () => {
           </Button>
         </div>
       </div>
-    </div>
+    </OnboardingLayout>
   );
 };
 
