@@ -8,62 +8,62 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Minimal, accessible color palette */
-    --background: 0 0% 99%;
-    --foreground: 220 13% 13%;
+    /* Clean, minimal color palette */
+    --background: 0 0% 98%;
+    --foreground: 0 0% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 13% 13%;
+    --card-foreground: 0 0% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 13% 13%;
+    --popover-foreground: 0 0% 15%;
 
-    /* Single saturated accent for CTAs and focus */
-    --primary: 262 83% 58%;
+    /* Dark primary for better contrast */
+    --primary: 0 0% 20%;
     --primary-foreground: 0 0% 100%;
 
-    /* Light gray surfaces */
-    --secondary: 220 13% 97%;
-    --secondary-foreground: 220 13% 13%;
+    /* Very light gray surfaces */
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 20%;
 
-    --muted: 220 13% 95%;
-    --muted-foreground: 220 9% 46%;
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 262 90% 97%;
-    --accent-foreground: 262 83% 58%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 20%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 142 76% 36%;
+    --success: 152 69% 31%;
     --success-foreground: 0 0% 100%;
 
-    /* High-contrast borders */
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 262 83% 58%;
+    /* Subtle borders */
+    --border: 0 0% 90%;
+    --input: 0 0% 88%;
+    --ring: 0 0% 20%;
 
     --radius: 0.5rem;
     
-    /* Minimal gradients */
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(220 13% 98%) 100%);
-    --shadow-minimal: 0 1px 3px 0 hsl(220 13% 13% / 0.08);
-    --shadow-elevated: 0 4px 16px -2px hsl(220 13% 13% / 0.12);
+    /* Minimal effects */
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 98%) 100%);
+    --shadow-minimal: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
+    --shadow-elevated: 0 4px 12px -2px hsl(0 0% 0% / 0.08);
 
     /* Progress sidebar */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 9% 46%;
-    --sidebar-primary: 220 13% 13%;
+    --sidebar-foreground: 0 0% 45%;
+    --sidebar-primary: 0 0% 20%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 262 83% 58%;
+    --sidebar-accent: 0 0% 20%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 262 83% 58%;
+    --sidebar-border: 0 0% 92%;
+    --sidebar-ring: 0 0% 20%;
     
     /* Step indicators */
-    --step-incomplete: 220 13% 91%;
-    --step-complete: 262 83% 58%;
-    --step-active: 262 83% 58%;
+    --step-incomplete: 0 0% 88%;
+    --step-complete: 152 69% 31%;
+    --step-active: 0 0% 20%;
   }
 
   .dark {
