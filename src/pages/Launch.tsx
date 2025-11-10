@@ -1,11 +1,15 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Rocket, Star, Globe, Users, Settings, ExternalLink } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Check, Rocket, Loader2, ExternalLink, Clock } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import OnboardingLayout from "@/components/OnboardingLayout";
 
 const Launch = () => {
   const { toast } = useToast();
+  const [deploymentStatus, setDeploymentStatus] = useState<"idle" | "deploying" | "completed">("idle");
+  const [progress, setProgress] = useState(0);
 
   const steps = [
     { id: 1, name: "Customize Branding", path: "/onboarding/basic-info" },
@@ -23,184 +27,243 @@ const Launch = () => {
     creatorAppUrl: "app.truefanz-creator.com",
   };
 
-  const handleLaunch = () => {
+  const handleStartDeployment = () => {
+    setDeploymentStatus("deploying");
+    setProgress(0);
+
+    // Simulate deployment progress
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setDeploymentStatus("completed");
+          toast({
+            title: "🎉 Platform Launched Successfully!",
+            description: "Your platform is now live and accessible.",
+          });
+          return 100;
+        }
+        return prev + 2;
+      });
+    }, 100);
+  };
+
+  const handleCheckStatus = () => {
     toast({
-      title: "Platform Launching...",
-      description: "Your platform will be live within 2-3 minutes",
+      title: "Deployment In Progress",
+      description: `Current progress: ${progress}%`,
     });
   };
 
   return (
     <OnboardingLayout currentStep={6} steps={steps}>
-      <div className="max-w-6xl mx-auto px-6 py-8 lg:px-12">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-success/10 mb-4">
-            <Rocket className="w-8 h-8 text-success" />
-          </div>
-          <h1 className="text-3xl font-bold mb-3 text-foreground">
-            Ready to Launch!
-          </h1>
-          <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
-            Your branded telehealth platform is configured and ready to go live. Review your setup and launch when you're ready.
-          </p>
-        </div>
+      <div className="max-w-4xl mx-auto px-6 py-12 lg:px-12 lg:py-16">
+        {deploymentStatus === "completed" ? (
+          <>
+            {/* Success State */}
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-success/10 mb-6">
+                <Rocket className="w-12 h-12 text-success" />
+              </div>
+              <h1 className="text-4xl font-bold mb-4 text-foreground">
+                🎉 Platform Launched!
+              </h1>
+              <p className="text-lg text-muted-foreground">
+                Your platform is now live and ready to welcome subscribers!
+              </p>
+            </div>
 
-        {/* Cards Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* Platform Summary Card */}
-          <Card>
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2 text-base font-semibold">
-                <Star className="w-5 h-5 text-primary" />
-                Platform Summary
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1">Business Name</p>
-                  <p className="text-sm font-medium text-foreground">-</p>
+            {/* Brand Info */}
+            <Card className="p-8 mb-8 bg-accent/20 border-accent shadow-elevated">
+              <h2 className="text-xl font-semibold mb-6">Your Platform Details</h2>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center py-4 border-b border-border">
+                  <span className="text-muted-foreground text-sm">Brand Name:</span>
+                  <span className="font-semibold text-foreground">{brandInfo.brandName}</span>
                 </div>
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1">Business Type</p>
-                  <p className="text-sm font-medium text-foreground">-</p>
+                <div className="flex justify-between items-center py-4">
+                  <span className="text-muted-foreground text-sm">Custom Domain:</span>
+                  <span className="font-semibold text-foreground">{brandInfo.domain}</span>
                 </div>
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">Platform Focus</p>
-                <p className="text-sm font-medium text-foreground">-</p>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">Selected Template</p>
-                <p className="text-sm font-medium text-foreground">-</p>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
+            </Card>
+
+            {/* Platform URLs */}
+            <Card className="p-8 mb-8 shadow-elevated">
+              <h2 className="text-xl font-semibold mb-6">Platform URLs</h2>
+              <div className="space-y-8">
                 <div>
-                  <p className="text-xs text-muted-foreground mb-1">Brand Color</p>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded bg-primary border border-border" />
-                    <p className="text-sm font-medium text-foreground">#3882F6</p>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-base">Website</h3>
                   </div>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1">Font Family</p>
-                  <p className="text-sm font-medium text-foreground">Inter</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Platform Access Card */}
-          <Card>
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2 text-base font-semibold">
-                <Globe className="w-5 h-5 text-primary" />
-                Platform Access
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <p className="text-xs text-muted-foreground mb-2">Customer Portal URL</p>
-                <div className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/30">
-                  <div>
-                    <p className="text-sm font-medium text-foreground">your-business.hyrhealth.com</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Where patients will access your platform</p>
-                  </div>
-                  <Button size="sm" variant="ghost" className="text-xs">
-                    <ExternalLink className="w-3 h-3 mr-1" />
-                    Visit
-                  </Button>
-                </div>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground mb-2">Merchant Portal URL</p>
-                <div className="flex items-center justify-between p-3 rounded-lg bg-success/5 border border-success/20">
-                  <div>
-                    <p className="text-sm font-medium text-success">admin.your-business.hyrhealth.com</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Manage your platform and patients</p>
-                  </div>
-                  <Button size="sm" variant="ghost" className="text-xs text-success hover:text-success">
-                    <Settings className="w-3 h-3 mr-1" />
-                    Access
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Setup Complete Card */}
-          <Card>
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2 text-base font-semibold">
-                <Check className="w-5 h-5 text-success" />
-                Setup Complete
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2.5">
-                {[
-                  "Platform configured and branded",
-                  "Domain setup completed",
-                  "Legal documents in place",
-                  "Payment processing ready",
-                  "SSL certificate installed",
-                  "HIPAA compliance enabled"
-                ].map((item, index) => (
-                  <li key={index} className="flex items-center gap-2 text-sm">
-                    <div className="w-1.5 h-1.5 rounded-full bg-success flex-shrink-0" />
-                    <span className="text-foreground">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-
-          {/* Next Steps Card */}
-          <Card>
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2 text-base font-semibold">
-                <Users className="w-5 h-5 text-primary" />
-                Next Steps
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-3">
-                {[
-                  { number: "1", title: "Complete your admin profile", desc: "Add your professional credentials and bio" },
-                  { number: "2", title: "Set up your services", desc: "Configure consultation types and pricing" },
-                  { number: "3", title: "Test your platform", desc: "Make a test booking to ensure everything works" },
-                  { number: "4", title: "Start accepting patients", desc: "Share your platform URL and begin consultations" }
-                ].map((step) => (
-                  <li key={step.number} className="flex gap-3">
-                    <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-semibold flex-shrink-0">
-                      {step.number}
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 bg-accent/20 px-5 py-4 rounded-lg border border-accent">
+                      <a
+                        href={`https://${brandInfo.domain}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline font-medium text-sm"
+                      >
+                        www.{brandInfo.domain}
+                      </a>
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-foreground">{step.title}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">{step.desc}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      onClick={() => window.open(`https://${brandInfo.domain}`, "_blank")}
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
 
-        {/* Launch Button */}
-        <div className="max-w-2xl mx-auto">
-          <Button
-            size="lg"
-            className="w-full h-14 text-base font-semibold bg-gradient-to-r from-success to-primary hover:opacity-90 transition-opacity"
-            onClick={handleLaunch}
-          >
-            <Rocket className="w-5 h-5 mr-2" />
-            Launch My Platform
-          </Button>
-          <p className="text-center text-xs text-muted-foreground mt-3">
-            Your platform will be live within 2-3 minutes
-          </p>
-        </div>
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-base">Fan App</h3>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 bg-accent/20 px-5 py-4 rounded-lg border border-accent">
+                      <a
+                        href={`https://${brandInfo.fanAppUrl}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline font-medium text-sm"
+                      >
+                        {brandInfo.fanAppUrl}
+                      </a>
+                    </div>
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      onClick={() => window.open(`https://${brandInfo.fanAppUrl}`, "_blank")}
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <div className="mt-3 p-3 bg-muted/50 rounded-lg text-sm text-muted-foreground space-y-1">
+                    <p><span className="font-medium">Username:</span> test@gmail.com</p>
+                    <p><span className="font-medium">Password:</span> Qwerty@123</p>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-base">Creator App</h3>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 bg-accent/20 px-5 py-4 rounded-lg border border-accent">
+                      <a
+                        href={`https://${brandInfo.creatorAppUrl}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline font-medium text-sm"
+                      >
+                        {brandInfo.creatorAppUrl}
+                      </a>
+                    </div>
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      onClick={() => window.open(`https://${brandInfo.creatorAppUrl}`, "_blank")}
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <div className="mt-3 p-3 bg-muted/50 rounded-lg text-sm text-muted-foreground space-y-1">
+                    <p><span className="font-medium">Username:</span> test@gmail.com</p>
+                    <p><span className="font-medium">Password:</span> Qwerty@123</p>
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            {/* Feedback Section */}
+            <Card className="p-8 shadow-elevated">
+              <h3 className="text-lg font-semibold mb-4">Share Your Feedback</h3>
+              <textarea
+                placeholder="We'd love to hear about your experience..."
+                className="w-full h-32 px-4 py-3 rounded-lg border border-input bg-background resize-none focus:outline-none focus:ring-2 focus:ring-ring text-sm"
+              />
+              <Button className="w-full mt-4" size="lg">
+                Submit Feedback
+              </Button>
+            </Card>
+          </>
+        ) : (
+          <>
+            {/* Pre-deployment State */}
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-primary/10 mb-6">
+                <Rocket className="w-12 h-12 text-primary" />
+              </div>
+              <h1 className="text-4xl font-bold mb-4 text-foreground">
+                🚀 You're Almost There!
+              </h1>
+              <p className="text-lg text-muted-foreground mb-2">
+                Your platform is configured and ready to launch
+              </p>
+              <p className="text-base text-muted-foreground mb-6">
+                Let's activate it and go live to the world!
+              </p>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent/30 rounded-full">
+                <Clock className="w-4 h-4 text-primary" />
+                <span className="text-sm text-foreground">Estimated time: 2-5 minutes</span>
+              </div>
+            </div>
+
+            {/* Brand Info Preview */}
+            <Card className="p-8 mb-8 bg-accent/20 border-accent shadow-elevated">
+              <h2 className="text-xl font-semibold mb-6">Your Platform Details</h2>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center py-4 border-b border-border">
+                  <span className="text-muted-foreground text-sm">Brand Name:</span>
+                  <span className="font-semibold text-foreground">{brandInfo.brandName}</span>
+                </div>
+                <div className="flex justify-between items-center py-4">
+                  <span className="text-muted-foreground text-sm">Custom Domain:</span>
+                  <span className="font-semibold text-foreground">{brandInfo.domain}</span>
+                </div>
+              </div>
+            </Card>
+
+            {/* Deployment Progress */}
+            {deploymentStatus === "deploying" && (
+              <Card className="p-8 mb-8 shadow-elevated">
+                <div className="text-center mb-6">
+                  <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">Deploying Your Platform...</h3>
+                  <p className="text-sm text-muted-foreground">Please wait while we set everything up</p>
+                </div>
+                <Progress value={progress} className="mb-4 h-2" />
+                <p className="text-center text-sm font-medium text-foreground">{progress}% Complete</p>
+              </Card>
+            )}
+
+            {/* Action Button */}
+            <div className="space-y-4">
+              {deploymentStatus === "idle" ? (
+                <Button
+                  size="lg"
+                  className="w-full h-16 text-base gap-2"
+                  onClick={handleStartDeployment}
+                >
+                  <Rocket className="w-5 h-5" />
+                  Start Deployment
+                </Button>
+              ) : (
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full h-16 text-base gap-2"
+                  onClick={handleCheckStatus}
+                >
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Check Status
+                </Button>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </OnboardingLayout>
   );
