@@ -15,7 +15,12 @@ import {
   Video,
   Sparkles,
   Check,
-  Loader2
+  Loader2,
+  Lightbulb,
+  Target,
+  Calendar,
+  MessageSquare,
+  RefreshCw
 } from "lucide-react";
 
 const PLATFORM_CATEGORIES = [
@@ -30,11 +35,13 @@ const PLATFORM_CATEGORIES = [
   "Other"
 ];
 
-const TONE_PRESETS = [
-  { value: "casual", label: "Casual & Friendly" },
-  { value: "peppy", label: "Peppy & Energetic" },
-  { value: "professional", label: "Professional" },
-  { value: "inspiring", label: "Inspiring" }
+const EMOTION_CONTROLS = [
+  { id: "casual", label: "Casual", icon: "😊" },
+  { id: "flirty", label: "Flirty", icon: "😘" },
+  { id: "fun", label: "Fun", icon: "🎉" },
+  { id: "serious", label: "Serious", icon: "😐" },
+  { id: "angry", label: "Angry", icon: "😠" },
+  { id: "happy", label: "Happy", icon: "😄" }
 ];
 
 const PRESET_COLORS = [
@@ -56,6 +63,14 @@ export default function BasicInfo() {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [nameError, setNameError] = useState("");
   const [isCheckingName, setIsCheckingName] = useState(false);
+  const [emotionValues, setEmotionValues] = useState<Record<string, number>>({
+    casual: 50,
+    flirty: 0,
+    fun: 50,
+    serious: 0,
+    angry: 0,
+    happy: 50
+  });
 
   // Auto-save functionality
   useEffect(() => {
@@ -124,17 +139,27 @@ export default function BasicInfo() {
     }
   };
 
-  const generateAIDescription = async (tone: string) => {
+  const generateAIDescription = async () => {
     setIsGeneratingAI(true);
-    // Simulate AI generation
+    // Simulate AI generation based on emotion controls
     setTimeout(() => {
-      const descriptions = {
-        casual: "Hey there! Welcome to my platform where creativity meets community. Join me on this journey as we explore, create, and connect!",
-        peppy: "🌟 Ready to dive into something AMAZING? This is YOUR space to shine, create, and be part of something extraordinary!",
-        professional: "A professional platform dedicated to delivering high-quality content and fostering meaningful connections with our community.",
-        inspiring: "Together, we're building more than a platform—we're creating a movement. Join us in making a difference, one connection at a time."
-      };
-      setDescription(descriptions[tone as keyof typeof descriptions] || descriptions.casual);
+      const activeEmotions = Object.entries(emotionValues)
+        .filter(([_, value]) => value > 0)
+        .sort(([_, a], [__, b]) => b - a);
+      
+      let generatedText = "Welcome to my platform! ";
+      
+      if (activeEmotions[0]?.[0] === "casual" || activeEmotions[0]?.[0] === "fun") {
+        generatedText += "Join me on this exciting journey where creativity meets community. Let's explore, create, and connect together!";
+      } else if (activeEmotions[0]?.[0] === "happy") {
+        generatedText += "I'm thrilled to share my passion with you! This is a space for positivity, growth, and amazing experiences.";
+      } else if (activeEmotions[0]?.[0] === "serious") {
+        generatedText += "A professional platform dedicated to delivering high-quality content and fostering meaningful connections.";
+      } else {
+        generatedText += "Discover exclusive content, behind-the-scenes moments, and join a vibrant community of like-minded individuals!";
+      }
+      
+      setDescription(generatedText);
       setIsGeneratingAI(false);
       toast({
         title: "Description generated!",
@@ -175,10 +200,12 @@ export default function BasicInfo() {
               <p className="text-sm text-muted-foreground">Watch this quick guide to get started</p>
             </div>
           </div>
-          <div className="h-48 max-w-3xl bg-muted rounded-lg flex items-center justify-center">
-            <div className="text-center">
-              <Video className="h-12 w-12 mx-auto mb-2 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">Welcome video placeholder</p>
+          <div className="w-full max-w-3xl">
+            <div className="h-48 bg-muted rounded-lg flex items-center justify-center">
+              <div className="text-center">
+                <Video className="h-12 w-12 mx-auto mb-2 text-muted-foreground" />
+                <p className="text-sm text-muted-foreground">Welcome video placeholder</p>
+              </div>
             </div>
           </div>
         </Card>
@@ -315,7 +342,7 @@ export default function BasicInfo() {
         </Card>
 
         {/* Profile Description */}
-        <Card className="p-6 mb-8 bg-card">
+        <Card className="p-6 mb-6 bg-card">
           <div className="flex items-center gap-3 mb-6">
             <div className="p-2 bg-primary/10 rounded-lg">
               <Sparkles className="h-6 w-6 text-primary" />
@@ -323,39 +350,116 @@ export default function BasicInfo() {
             <h2 className="text-xl font-semibold">Profile Description</h2>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex flex-wrap gap-2 mb-4">
-              <span className="text-sm text-muted-foreground">Write with AI:</span>
-              {TONE_PRESETS.map(preset => (
-                <Button
-                  key={preset.value}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => generateAIDescription(preset.value)}
-                  disabled={isGeneratingAI}
-                >
-                  {isGeneratingAI ? (
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  ) : (
-                    <Sparkles className="h-4 w-4 mr-2" />
-                  )}
-                  {preset.label}
-                </Button>
-              ))}
-            </div>
-
+          <div className="space-y-6">
+            {/* Textarea */}
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Describe your platform and what makes it unique..."
+              placeholder="What's on your mind?"
               className="min-h-[120px] resize-none"
               maxLength={500}
             />
-            <div className="flex justify-between items-center">
-              <p className="text-sm text-muted-foreground">
-                Tell your audience what makes your platform special
-              </p>
+            <div className="flex justify-end">
               <span className="text-sm text-muted-foreground">{description.length}/500</span>
+            </div>
+
+            {/* Emotion Controls */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between bg-pink-500 text-white px-4 py-2 rounded-lg">
+                <span className="font-medium">Emotion Controls</span>
+                <span className="text-sm">({Object.values(emotionValues).filter(v => v > 0).length} active)</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                {EMOTION_CONTROLS.map((emotion) => (
+                  <div key={emotion.id} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{emotion.icon}</span>
+                        <Label className="font-medium">{emotion.label}</Label>
+                      </div>
+                      <span className="text-sm text-muted-foreground">{emotionValues[emotion.id]}%</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={emotionValues[emotion.id]}
+                      onChange={(e) => setEmotionValues(prev => ({
+                        ...prev,
+                        [emotion.id]: parseInt(e.target.value)
+                      }))}
+                      className="w-full h-2 rounded-lg appearance-none cursor-pointer"
+                      style={{
+                        background: `linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) ${emotionValues[emotion.id]}%, hsl(var(--muted)) ${emotionValues[emotion.id]}%, hsl(var(--muted)) 100%)`
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Generate Button */}
+            <Button
+              onClick={generateAIDescription}
+              disabled={isGeneratingAI}
+              className="w-full bg-pink-400 hover:bg-pink-500 text-white"
+              size="lg"
+            >
+              {isGeneratingAI ? (
+                <Loader2 className="h-5 w-5 animate-spin mr-2" />
+              ) : (
+                <Sparkles className="h-5 w-5 mr-2" />
+              )}
+              Generate with AI
+            </Button>
+
+            {/* Tip */}
+            <p className="text-sm text-center text-muted-foreground">
+              Tip: Adjust emotion controls to change the tone of your content
+            </p>
+          </div>
+        </Card>
+
+        {/* Pro Tips */}
+        <Card className="p-6 mb-8 bg-card">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Lightbulb className="h-6 w-6 text-primary" />
+            </div>
+            <h2 className="text-xl font-semibold">Pro tips for better results</h2>
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex gap-3">
+              <Target className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-foreground">
+                <span className="font-medium">Lead with outcomes:</span> Tell fans what they'll get (e.g., "weekly behind-the-scenes + early drops").
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <Calendar className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-foreground">
+                <span className="font-medium">Add specifics:</span> Mention format or cadence ("2 live sessions/month").
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <MessageSquare className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-foreground">
+                <span className="font-medium">Match your tone to your niche:</span> Casual/Fun for lifestyle; Serious/Casual for education.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-foreground">
+                <span className="font-medium">Keep it short:</span> 1–2 short paragraphs convert best.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <RefreshCw className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-foreground">
+                <span className="font-medium">Iterate:</span> Tweak sliders and regenerate to compare variants.
+              </p>
             </div>
           </div>
         </Card>
