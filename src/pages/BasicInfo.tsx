@@ -175,7 +175,7 @@ export default function BasicInfo() {
               <p className="text-sm text-muted-foreground">Watch this quick guide to get started</p>
             </div>
           </div>
-          <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
+          <div className="h-48 max-w-3xl bg-muted rounded-lg flex items-center justify-center">
             <div className="text-center">
               <Video className="h-12 w-12 mx-auto mb-2 text-muted-foreground" />
               <p className="text-sm text-muted-foreground">Welcome video placeholder</p>
