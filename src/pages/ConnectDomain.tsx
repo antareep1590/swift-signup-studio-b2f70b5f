@@ -5,9 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import OnboardingLayout from "@/components/OnboardingLayout";
 import {
   Globe,
-  Mail,
   Check,
   Search,
   ExternalLink,
@@ -94,41 +94,18 @@ const ConnectDomain = () => {
     }, 2000);
   };
 
+  const steps = [
+    { id: 1, name: "Verify Identity", path: "/onboarding/verify-identity" },
+    { id: 2, name: "Customize Branding", path: "/onboarding/basic-info" },
+    { id: 3, name: "Preview", path: "/onboarding/preview" },
+    { id: 4, name: "Payment", path: "/onboarding/payment" },
+    { id: 5, name: "Connect Domain", path: "/onboarding/connect-domain" },
+    { id: 6, name: "Stripe Access", path: "/onboarding/stripe-access" },
+    { id: 7, name: "Launch", path: "/onboarding/launch" }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/10">
-      {/* Header */}
-      <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <img src="/placeholder.svg" alt="Logo" className="h-8" />
-          </div>
-          <Button variant="ghost" size="sm">
-            <Mail className="mr-2 h-4 w-4" />
-            Logout
-          </Button>
-        </div>
-      </div>
-
-      {/* Progress Steps */}
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex items-center justify-center gap-4 md:gap-8 max-w-4xl mx-auto">
-          {["Customize Branding", "Preview", "Payment", "Connect Domain", "Stripe Access", "Launch"].map((step, idx) => (
-            <div key={step} className="flex flex-col items-center gap-2">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium ${
-                idx < 3 
-                  ? "bg-green-500 text-white" 
-                  : idx === 3
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground"
-              }`}>
-                {idx < 3 ? <Check className="h-5 w-5" /> : idx + 1}
-              </div>
-              <span className="text-xs text-center max-w-[100px] hidden md:block">{step}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
+    <OnboardingLayout currentStep={5} steps={steps}>
       <div className="container mx-auto px-4 py-8 max-w-5xl">
         {/* Page Header */}
         <div className="text-center mb-8">
@@ -382,7 +359,7 @@ const ConnectDomain = () => {
           </Button>
         </div>
       </div>
-    </div>
+    </OnboardingLayout>
   );
 };
 

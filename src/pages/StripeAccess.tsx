@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Check, Copy, ExternalLink, PlayCircle, CreditCard, TrendingUp, Shield, PieChart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import OnboardingLayout from "@/components/OnboardingLayout";
 
 const StripeAccess = () => {
   const navigate = useNavigate();
@@ -12,12 +13,13 @@ const StripeAccess = () => {
   const accessEmail = "your-access-email@example.com";
 
   const steps = [
-    { id: 1, name: "Basic Info", path: "/onboarding/basic-info" },
-    { id: 2, name: "Preview", path: "/onboarding/preview" },
-    { id: 3, name: "Payment", path: "/onboarding/payment" },
-    { id: 4, name: "Connect Domain", path: "/onboarding/connect-domain" },
-    { id: 5, name: "Stripe Access", path: "/onboarding/stripe-access" },
-    { id: 6, name: "Launch", path: "/onboarding/launch" },
+    { id: 1, name: "Verify Identity", path: "/onboarding/verify-identity" },
+    { id: 2, name: "Customize Branding", path: "/onboarding/basic-info" },
+    { id: 3, name: "Preview", path: "/onboarding/preview" },
+    { id: 4, name: "Payment", path: "/onboarding/payment" },
+    { id: 5, name: "Connect Domain", path: "/onboarding/connect-domain" },
+    { id: 6, name: "Stripe Access", path: "/onboarding/stripe-access" },
+    { id: 7, name: "Launch", path: "/onboarding/launch" }
   ];
 
   const copyToClipboard = () => {
@@ -35,57 +37,7 @@ const StripeAccess = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/20">
-      {/* Header */}
-      <div className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="text-2xl font-bold text-primary">VEWMEE</div>
-              <div className="text-xs text-muted-foreground">MONETIZE YOUR BRAND</div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm">
-                Logout
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Progress Steps */}
-      <div className="border-b bg-background/50 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
-            {steps.map((step, index) => (
-              <div key={step.id} className="flex flex-col items-center flex-1">
-                <div className="flex items-center w-full">
-                  {index > 0 && (
-                    <div className={`flex-1 h-0.5 ${index <= 4 ? "bg-primary" : "bg-muted"}`} />
-                  )}
-                  <div
-                    className={`flex items-center justify-center w-10 h-10 rounded-full font-medium text-sm mx-2 ${
-                      index < 5
-                        ? "bg-primary text-primary-foreground"
-                        : index === 5
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground"
-                    }`}
-                  >
-                    {index < 5 ? <Check className="w-5 h-5" /> : step.id}
-                  </div>
-                  {index < steps.length - 1 && (
-                    <div className={`flex-1 h-0.5 ${index < 4 ? "bg-primary" : "bg-muted"}`} />
-                  )}
-                </div>
-                <div className="text-xs mt-2 text-center font-medium">{step.name}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
+    <OnboardingLayout currentStep={6} steps={steps}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-3">Connect Your Stripe Account</h1>
@@ -239,7 +191,7 @@ const StripeAccess = () => {
           </Button>
         </div>
       </div>
-    </div>
+    </OnboardingLayout>
   );
 };
 
