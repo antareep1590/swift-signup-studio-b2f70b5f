@@ -8,24 +8,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import OnboardingLayout from "@/components/OnboardingLayout";
-import { 
-  Upload, 
-  User, 
-  Palette, 
-  Mail,
+import {
+  Upload,
+  User,
+  Palette,
   Video,
   Sparkles,
   Check,
   Loader2
 } from "lucide-react";
-import { 
-  Facebook, 
-  Instagram, 
-  Youtube, 
-  Twitter,
-  Twitch
-} from "lucide-react";
-import { SiTiktok, SiDiscord } from "react-icons/si";
 
 const PLATFORM_CATEGORIES = [
   "Modeling",
@@ -46,16 +37,6 @@ const TONE_PRESETS = [
   { value: "inspiring", label: "Inspiring" }
 ];
 
-const SOCIAL_PLATFORMS = [
-  { name: "instagram", label: "Instagram", icon: Instagram, placeholder: "https://instagram.com/yourusername", pattern: /^https?:\/\/(www\.)?instagram\.com\/.+/ },
-  { name: "facebook", label: "Facebook", icon: Facebook, placeholder: "https://facebook.com/yourpage", pattern: /^https?:\/\/(www\.)?facebook\.com\/.+/ },
-  { name: "tiktok", label: "TikTok", icon: SiTiktok, placeholder: "https://tiktok.com/@yourusername", pattern: /^https?:\/\/(www\.)?tiktok\.com\/.+/ },
-  { name: "youtube", label: "YouTube", icon: Youtube, placeholder: "https://youtube.com/@yourchannel", pattern: /^https?:\/\/(www\.)?youtube\.com\/.+/ },
-  { name: "twitter", label: "X (Twitter)", icon: Twitter, placeholder: "https://x.com/yourusername", pattern: /^https?:\/\/(www\.)?(x\.com|twitter\.com)\/.+/ },
-  { name: "discord", label: "Discord", icon: SiDiscord, placeholder: "https://discord.gg/yourinvite", pattern: /^https?:\/\/(www\.)?discord\.(gg|com)\/.+/ },
-  { name: "twitch", label: "Twitch", icon: Twitch, placeholder: "https://twitch.tv/yourchannel", pattern: /^https?:\/\/(www\.)?twitch\.tv\/.+/ }
-];
-
 const PRESET_COLORS = [
   "#FF6B9D", "#4ECDC4", "#95E1D3", "#F38181", "#AA96DA",
   "#FCBAD3", "#A8D8EA", "#FFCFDF", "#C7CEEA", "#FFD93D"
@@ -69,8 +50,6 @@ export default function BasicInfo() {
   const [customColor, setCustomColor] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
-  const [socialLinks, setSocialLinks] = useState<Record<string, string>>({});
-  const [socialErrors, setSocialErrors] = useState<Record<string, string>>({});
   const [logo, setLogo] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string>("");
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
@@ -81,14 +60,14 @@ export default function BasicInfo() {
   // Auto-save functionality
   useEffect(() => {
     const saveTimer = setTimeout(() => {
-      if (platformName || description || Object.keys(socialLinks).length > 0) {
+      if (platformName || description) {
         setLastSaved(new Date());
         // In real app, save to backend here
       }
     }, 2000);
 
     return () => clearTimeout(saveTimer);
-  }, [platformName, description, socialLinks, selectedColor, category]);
+  }, [platformName, description, selectedColor, category]);
 
   const validatePlatformName = (name: string) => {
     if (!name) {
@@ -116,34 +95,6 @@ export default function BasicInfo() {
     }, 500);
   };
 
-  const validateSocialUrl = (platform: string, url: string) => {
-    if (!url) {
-      setSocialErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[platform];
-        return newErrors;
-      });
-      return;
-    }
-
-    const platformData = SOCIAL_PLATFORMS.find(p => p.name === platform);
-    if (platformData && !platformData.pattern.test(url)) {
-      setSocialErrors(prev => ({
-        ...prev,
-        [platform]: `Please enter a valid ${platformData.label} URL`
-      }));
-    } else {
-      setSocialErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[platform];
-        return newErrors;
-      });
-    }
-  };
-
-  const handleSocialChange = (platform: string, value: string) => {
-    setSocialLinks(prev => ({ ...prev, [platform]: value }));
-  };
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -193,16 +144,17 @@ export default function BasicInfo() {
   };
 
   const steps = [
-    { id: 1, name: "Customize Branding", path: "/onboarding/basic-info" },
-    { id: 2, name: "Preview", path: "/onboarding/preview" },
-    { id: 3, name: "Payment", path: "/onboarding/payment" },
-    { id: 4, name: "Connect Domain", path: "/onboarding/connect-domain" },
-    { id: 5, name: "Stripe Access", path: "/onboarding/stripe-access" },
-    { id: 6, name: "Launch", path: "/onboarding/launch" }
+    { id: 1, name: "Verify Identity", path: "/onboarding/verify-identity" },
+    { id: 2, name: "Customize Branding", path: "/onboarding/basic-info" },
+    { id: 3, name: "Preview", path: "/onboarding/preview" },
+    { id: 4, name: "Payment", path: "/onboarding/payment" },
+    { id: 5, name: "Connect Domain", path: "/onboarding/connect-domain" },
+    { id: 6, name: "Stripe Access", path: "/onboarding/stripe-access" },
+    { id: 7, name: "Launch", path: "/onboarding/launch" }
   ];
 
   return (
-    <OnboardingLayout currentStep={1} steps={steps}>
+    <OnboardingLayout currentStep={2} steps={steps}>
       <div className="container mx-auto px-4 lg:px-8 py-8 max-w-6xl">
         {/* Auto-save indicator */}
         {lastSaved && (
@@ -362,41 +314,6 @@ export default function BasicInfo() {
           </div>
         </Card>
 
-        {/* Social Media Links */}
-        <Card className="p-6 mb-8 bg-card">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Mail className="h-6 w-6 text-primary" />
-            </div>
-            <h2 className="text-xl font-semibold">Connect Your Social Media</h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {SOCIAL_PLATFORMS.map((platform) => {
-              const Icon = platform.icon;
-              return (
-                <div key={platform.name}>
-                  <Label htmlFor={platform.name} className="text-sm font-medium mb-2 flex items-center gap-2">
-                    <Icon className="h-4 w-4" />
-                    {platform.label}
-                  </Label>
-                  <Input
-                    id={platform.name}
-                    value={socialLinks[platform.name] || ""}
-                    onChange={(e) => handleSocialChange(platform.name, e.target.value)}
-                    onBlur={(e) => validateSocialUrl(platform.name, e.target.value)}
-                    placeholder={platform.placeholder}
-                    className={socialErrors[platform.name] ? "border-destructive" : ""}
-                  />
-                  {socialErrors[platform.name] && (
-                    <p className="text-sm text-destructive mt-1">{socialErrors[platform.name]}</p>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </Card>
-
         {/* Profile Description */}
         <Card className="p-6 mb-8 bg-card">
           <div className="flex items-center gap-3 mb-6">
@@ -445,10 +362,10 @@ export default function BasicInfo() {
 
         {/* Action Buttons */}
         <div className="flex justify-between items-center">
-          <Button variant="ghost" onClick={() => navigate("/auth")}>Back</Button>
+          <Button variant="ghost" onClick={() => navigate("/onboarding/verify-identity")}>Back</Button>
           <Button 
             className="bg-primary hover:bg-primary/90"
-            disabled={!!nameError || Object.keys(socialErrors).length > 0}
+            disabled={!!nameError}
             onClick={() => navigate("/onboarding/preview")}
           >
             Save & Next

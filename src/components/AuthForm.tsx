@@ -61,9 +61,9 @@ export const AuthForm = ({ mode, onToggleMode }: AuthFormProps) => {
       
       toast.success(mode === "login" ? "Welcome back!" : "Account created successfully!");
       
-      // Redirect to onboarding
+      // Redirect to verification step
       setTimeout(() => {
-        navigate('/onboarding/basic-info');
+        navigate('/onboarding/verify-identity');
       }, 500);
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
@@ -80,7 +80,7 @@ export const AuthForm = ({ mode, onToggleMode }: AuthFormProps) => {
     toast.success(`${provider} login successful!`);
     
     setTimeout(() => {
-      navigate('/onboarding/basic-info');
+      navigate('/onboarding/verify-identity');
     }, 500);
   };
 

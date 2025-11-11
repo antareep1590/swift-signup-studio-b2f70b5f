@@ -13,12 +13,13 @@ const Preview = () => {
   const [device, setDevice] = useState<DeviceType>("desktop");
 
   const steps = [
-    { id: 1, name: "Customize Branding", path: "/onboarding/basic-info" },
-    { id: 2, name: "Preview", path: "/onboarding/preview" },
-    { id: 3, name: "Payment", path: "/onboarding/payment" },
-    { id: 4, name: "Connect Domain", path: "/onboarding/connect-domain" },
-    { id: 5, name: "Stripe Access", path: "/onboarding/stripe-access" },
-    { id: 6, name: "Launch", path: "/onboarding/launch" }
+    { id: 1, name: "Verify Identity", path: "/onboarding/verify-identity" },
+    { id: 2, name: "Customize Branding", path: "/onboarding/basic-info" },
+    { id: 3, name: "Preview", path: "/onboarding/preview" },
+    { id: 4, name: "Payment", path: "/onboarding/payment" },
+    { id: 5, name: "Connect Domain", path: "/onboarding/connect-domain" },
+    { id: 6, name: "Stripe Access", path: "/onboarding/stripe-access" },
+    { id: 7, name: "Launch", path: "/onboarding/launch" }
   ];
 
   const getDeviceWidth = () => {
@@ -175,7 +176,7 @@ const Preview = () => {
   );
 
   return (
-    <OnboardingLayout currentStep={2} steps={steps}>
+    <OnboardingLayout currentStep={3} steps={steps}>
       <div className="container mx-auto px-4 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-2xl font-semibold mb-2">Visual Preview</h1>
