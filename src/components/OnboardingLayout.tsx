@@ -19,25 +19,27 @@ const OnboardingLayout = ({ children, currentStep, steps }: OnboardingLayoutProp
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-background">
-      {/* Mobile Progress Bar - Top */}
-      <div className="lg:hidden w-full bg-card border-b border-border sticky top-0 z-20 shadow-sm">
-        <div className="px-6 py-3">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              Step {currentStep} of {steps.length}
-            </span>
-            <span className="text-xs font-semibold text-foreground">
-              {Math.round(progressPercentage)}%
-            </span>
-          </div>
-          <div className="h-1 bg-muted rounded-full overflow-hidden">
-            <div
-              className="h-full bg-foreground transition-all duration-500 ease-out"
-              style={{ width: `${progressPercentage}%` }}
-            />
+      {/* Mobile Progress Bar - Top (hidden for steps 5, 6, 7) */}
+      {currentStep < 5 && (
+        <div className="lg:hidden w-full bg-card border-b border-border sticky top-0 z-20 shadow-sm">
+          <div className="px-6 py-3">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                Step {currentStep} of {steps.length}
+              </span>
+              <span className="text-xs font-semibold text-foreground">
+                {Math.round(progressPercentage)}%
+              </span>
+            </div>
+            <div className="h-1 bg-muted rounded-full overflow-hidden">
+              <div
+                className="h-full bg-foreground transition-all duration-500 ease-out"
+                style={{ width: `${progressPercentage}%` }}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Desktop Left Sidebar Stepper */}
       <aside className="hidden lg:flex flex-col w-72 bg-card border-r border-border sticky top-0 h-screen">

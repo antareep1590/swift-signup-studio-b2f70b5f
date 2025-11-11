@@ -378,38 +378,96 @@ export default function VerifyIdentity() {
                 </div>
               ) : (
                 <div className="space-y-6">
-                  {/* SDK Placeholder */}
-                  <div className="aspect-video bg-muted/30 rounded-lg border-2 border-dashed border-border flex items-center justify-center">
-                    <div className="text-center p-6">
-                      {verificationStatus === "in_progress" && (
-                        <>
-                          <Loader2 className="h-12 w-12 mx-auto mb-4 text-primary animate-spin" />
-                          <p className="font-medium">Verification SDK Active</p>
-                          <p className="text-sm text-muted-foreground mt-2">
-                            Follow the on-screen instructions to capture your documents and selfie
+                  {verificationStatus === "in_progress" ? (
+                    <>
+                      {/* Document Upload Section */}
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <FileText className="h-5 w-5 text-primary" />
+                          <h3 className="font-semibold">Step 1: Upload Document</h3>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                          {/* Front of Document */}
+                          <div className="border-2 border-dashed border-primary/30 rounded-lg p-6 text-center hover:border-primary/60 transition-colors cursor-pointer bg-primary/5">
+                            <input type="file" accept="image/*" className="hidden" id="doc-front" />
+                            <label htmlFor="doc-front" className="cursor-pointer">
+                              <FileText className="h-10 w-10 mx-auto mb-3 text-primary" />
+                              <p className="font-medium text-sm mb-1">Front of Document</p>
+                              <p className="text-xs text-muted-foreground">Click to upload or drag</p>
+                            </label>
+                          </div>
+                          
+                          {/* Back of Document */}
+                          <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/30 transition-colors cursor-pointer">
+                            <input type="file" accept="image/*" className="hidden" id="doc-back" />
+                            <label htmlFor="doc-back" className="cursor-pointer">
+                              <FileText className="h-10 w-10 mx-auto mb-3 text-muted-foreground" />
+                              <p className="font-medium text-sm mb-1">Back of Document</p>
+                              <p className="text-xs text-muted-foreground">Click to upload or drag</p>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Selfie Capture Section */}
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Camera className="h-5 w-5 text-primary" />
+                          <h3 className="font-semibold">Step 2: Capture Selfie</h3>
+                        </div>
+                        
+                        <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary/30 transition-colors cursor-pointer">
+                          <div className="max-w-sm mx-auto">
+                            <Camera className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                            <p className="font-medium mb-2">Take a Selfie</p>
+                            <p className="text-sm text-muted-foreground mb-4">
+                              Center your face in the frame and follow the on-screen prompts
+                            </p>
+                            <Button size="lg" className="w-full">
+                              <Camera className="h-5 w-5 mr-2" />
+                              Start Camera
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Real-time Tips */}
+                      <div className="flex items-start gap-3 p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                        <AlertCircle className="h-5 w-5 text-blue-500 mt-0.5" />
+                        <div className="text-sm">
+                          <p className="font-medium mb-1 text-blue-900 dark:text-blue-100">Active Verification</p>
+                          <p className="text-blue-800 dark:text-blue-200">
+                            Upload clear photos of your document (front and back if required), then take a selfie to complete verification.
                           </p>
-                        </>
-                      )}
-                      {(verificationStatus === "submitted" || verificationStatus === "needs_review") && (
-                        <>
-                          <Clock className="h-12 w-12 mx-auto mb-4 text-amber-500" />
-                          <p className="font-medium">Verification Processing</p>
-                          <p className="text-sm text-muted-foreground mt-2">
-                            We're reviewing your submission
-                          </p>
-                        </>
-                      )}
-                      {verificationStatus === "approved" && (
-                        <>
-                          <CheckCircle2 className="h-12 w-12 mx-auto mb-4 text-green-500" />
-                          <p className="font-medium text-green-500">Verification Complete!</p>
-                          <p className="text-sm text-muted-foreground mt-2">
-                            All features are now unlocked
-                          </p>
-                        </>
-                      )}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    /* Submitted/Approved States */
+                    <div className="aspect-video bg-muted/30 rounded-lg border-2 border-dashed border-border flex items-center justify-center">
+                      <div className="text-center p-6">
+                        {(verificationStatus === "submitted" || verificationStatus === "needs_review") && (
+                          <>
+                            <Clock className="h-12 w-12 mx-auto mb-4 text-amber-500" />
+                            <p className="font-medium">Verification Processing</p>
+                            <p className="text-sm text-muted-foreground mt-2">
+                              We're reviewing your submission
+                            </p>
+                          </>
+                        )}
+                        {verificationStatus === "approved" && (
+                          <>
+                            <CheckCircle2 className="h-12 w-12 mx-auto mb-4 text-green-500" />
+                            <p className="font-medium text-green-500">Verification Complete!</p>
+                            <p className="text-sm text-muted-foreground mt-2">
+                              All features are now unlocked
+                            </p>
+                          </>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Test Mode Button (for demo purposes) */}
                   <div className="p-3 bg-amber-500/10 rounded-lg border border-amber-500/20">

@@ -190,25 +190,25 @@ export default function BasicInfo() {
         )}
 
         {/* Welcome Video */}
-        <Card className="p-6 mb-8 bg-card">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Video className="h-6 w-6 text-primary" />
+        <div className="mb-8">
+          <Card className="p-6 bg-card">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Video className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold">Welcome to Your Platform Setup!</h2>
+                <p className="text-sm text-muted-foreground">Watch this quick guide to get started</p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-lg font-semibold">Welcome to Your Platform Setup!</h2>
-              <p className="text-sm text-muted-foreground">Watch this quick guide to get started</p>
-            </div>
-          </div>
-          <div className="w-full max-w-3xl">
             <div className="h-48 bg-muted rounded-lg flex items-center justify-center">
               <div className="text-center">
                 <Video className="h-12 w-12 mx-auto mb-2 text-muted-foreground" />
                 <p className="text-sm text-muted-foreground">Welcome video placeholder</p>
               </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </div>
 
         {/* Brand Identity Section */}
         <Card className="p-6 mb-8 bg-card">
