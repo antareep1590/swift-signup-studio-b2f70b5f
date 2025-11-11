@@ -143,45 +143,45 @@ const Launch = () => {
               <h2 className="text-lg font-semibold">Platform Access</h2>
             </CardHeader>
             <CardContent className="space-y-5">
-              {/* Customer Portal */}
+              {/* Influencer Platform */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-medium">Customer Portal URL</p>
+                  <p className="text-sm font-medium">Influencer Platform URL</p>
                   <Button 
                     variant="ghost" 
                     size="sm"
-                    onClick={() => window.open(`https://${brandInfo.domain}`, "_blank")}
+                    onClick={() => window.open(`https://influencer.tf.com`, "_blank")}
                   >
                     <ExternalLink className="h-4 w-4 mr-1" />
                     Visit
                   </Button>
                 </div>
                 <div className="bg-muted/50 px-4 py-3 rounded-lg border border-border">
-                  <p className="text-sm font-mono text-foreground">{brandInfo.domain}</p>
+                  <p className="text-sm font-mono text-foreground">influencer.tf.com</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Where patients will access your platform
+                    Where influencers will access your platform
                   </p>
                 </div>
               </div>
 
-              {/* Merchant Portal */}
+              {/* Subscriber Platform */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-medium">Merchant Portal URL</p>
+                  <p className="text-sm font-medium">Subscriber Platform URL</p>
                   <Button 
                     variant="outline" 
                     size="sm"
                     className="bg-green-500 hover:bg-green-600 text-white border-green-500"
-                    onClick={() => window.open(`https://${brandInfo.merchantPortal}`, "_blank")}
+                    onClick={() => window.open(`https://fan.tf.com`, "_blank")}
                   >
                     <ExternalLink className="h-4 w-4 mr-1" />
                     Access
                   </Button>
                 </div>
                 <div className="bg-green-500/10 px-4 py-3 rounded-lg border border-green-500/30">
-                  <p className="text-sm font-mono text-foreground">{brandInfo.merchantPortal}</p>
+                  <p className="text-sm font-mono text-foreground">fan.tf.com</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Manage your platform and patients
+                    Manage your platform and subscribers
                   </p>
                 </div>
               </div>
@@ -215,40 +215,11 @@ const Launch = () => {
             </CardContent>
           </Card>
 
-          {/* Next Steps */}
-          <Card>
-            <CardHeader className="flex flex-row items-center gap-3 space-y-0 pb-4">
-              <div className="p-2 bg-purple-500/10 rounded-lg">
-                <Users className="h-5 w-5 text-purple-500" />
-              </div>
-              <h2 className="text-lg font-semibold">Next Steps</h2>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {[
-                { num: 1, title: "Complete your admin profile", desc: "Add your professional credentials and bio" },
-                { num: 2, title: "Set up your services", desc: "Configure consultation types and pricing" },
-                { num: 3, title: "Test your platform", desc: "Make a test booking to ensure everything works" },
-                { num: 4, title: "Start accepting patients", desc: "Share your platform URL and begin consultations" }
-              ].map((step) => (
-                <div key={step.num} className="flex gap-3">
-                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-500/20 flex items-center justify-center">
-                    <span className="text-xs font-semibold text-purple-600 dark:text-purple-400">
-                      {step.num}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{step.title}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{step.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
         </div>
 
         {/* Launch Button */}
-        <Card className="bg-gradient-to-r from-green-500 to-blue-500 border-0 text-white">
-          <CardContent className="p-8 text-center">
+        <Card className="bg-gradient-to-r from-green-500 to-blue-500 border-0 text-white max-w-2xl mx-auto">
+          <CardContent className="p-6 text-center">
             {deploymentStatus === "idle" ? (
               <>
                 <h3 className="text-xl font-bold mb-2">Ready to Go Live?</h3>
