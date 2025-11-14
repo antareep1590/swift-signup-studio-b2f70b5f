@@ -20,8 +20,10 @@ import {
   Target,
   Calendar,
   MessageSquare,
-  RefreshCw
+  RefreshCw,
+  ChevronDown
 } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const PLATFORM_CATEGORIES = [
   "Modeling",
@@ -71,6 +73,7 @@ export default function BasicInfo() {
     angry: 0,
     happy: 50
   });
+  const [isEmotionControlsOpen, setIsEmotionControlsOpen] = useState(false);
 
   // Auto-save functionality
   useEffect(() => {
@@ -363,41 +366,88 @@ export default function BasicInfo() {
               <span className="text-sm text-muted-foreground">{description.length}/500</span>
             </div>
 
-            {/* Emotion Controls */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between bg-pink-500 text-white px-4 py-2 rounded-lg">
-                <span className="font-medium">Emotion Controls</span>
-                <span className="text-sm">({Object.values(emotionValues).filter(v => v > 0).length} active)</span>
+            {/* Pro Tips */}
+            <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+              <div className="flex items-center gap-2 mb-2">
+                <Lightbulb className="h-5 w-5 text-primary" />
+                <h3 className="font-semibold text-sm">Pro tips for better results</h3>
               </div>
-
-              <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                {EMOTION_CONTROLS.map((emotion) => (
-                  <div key={emotion.id} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">{emotion.icon}</span>
-                        <Label className="font-medium">{emotion.label}</Label>
-                      </div>
-                      <span className="text-sm text-muted-foreground">{emotionValues[emotion.id]}%</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="0"
-                      max="100"
-                      value={emotionValues[emotion.id]}
-                      onChange={(e) => setEmotionValues(prev => ({
-                        ...prev,
-                        [emotion.id]: parseInt(e.target.value)
-                      }))}
-                      className="w-full h-2 rounded-lg appearance-none cursor-pointer"
-                      style={{
-                        background: `linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) ${emotionValues[emotion.id]}%, hsl(var(--muted)) ${emotionValues[emotion.id]}%, hsl(var(--muted)) 100%)`
-                      }}
-                    />
-                  </div>
-                ))}
+              <div className="space-y-2">
+                <div className="flex gap-2 text-sm">
+                  <Target className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                  <p className="text-foreground">
+                    <span className="font-medium">Lead with outcomes:</span> Tell fans what they'll get (e.g., "weekly behind-the-scenes + early drops").
+                  </p>
+                </div>
+                <div className="flex gap-2 text-sm">
+                  <Calendar className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                  <p className="text-foreground">
+                    <span className="font-medium">Add specifics:</span> Mention format or cadence ("2 live sessions/month").
+                  </p>
+                </div>
+                <div className="flex gap-2 text-sm">
+                  <MessageSquare className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                  <p className="text-foreground">
+                    <span className="font-medium">Match your tone to your niche:</span> Casual/Fun for lifestyle; Serious/Casual for education.
+                  </p>
+                </div>
+                <div className="flex gap-2 text-sm">
+                  <Sparkles className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                  <p className="text-foreground">
+                    <span className="font-medium">Keep it short:</span> 1–2 short paragraphs convert best.
+                  </p>
+                </div>
+                <div className="flex gap-2 text-sm">
+                  <RefreshCw className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                  <p className="text-foreground">
+                    <span className="font-medium">Iterate:</span> Tweak sliders and regenerate to compare variants.
+                  </p>
+                </div>
               </div>
             </div>
+
+            {/* Emotion Controls - Collapsible */}
+            <Collapsible open={isEmotionControlsOpen} onOpenChange={setIsEmotionControlsOpen}>
+              <CollapsibleTrigger className="w-full">
+                <div className="flex items-center justify-between bg-pink-500 hover:bg-pink-600 transition-colors text-white px-4 py-2 rounded-lg">
+                  <span className="font-medium">Emotion Controls</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">({Object.values(emotionValues).filter(v => v > 0).length} active)</span>
+                    <ChevronDown className={`h-4 w-4 transition-transform ${isEmotionControlsOpen ? 'rotate-180' : ''}`} />
+                  </div>
+                </div>
+              </CollapsibleTrigger>
+              
+              <CollapsibleContent className="mt-4">
+                <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                  {EMOTION_CONTROLS.map((emotion) => (
+                    <div key={emotion.id} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">{emotion.icon}</span>
+                          <Label className="font-medium">{emotion.label}</Label>
+                        </div>
+                        <span className="text-sm text-muted-foreground">{emotionValues[emotion.id]}%</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={emotionValues[emotion.id]}
+                        onChange={(e) => setEmotionValues(prev => ({
+                          ...prev,
+                          [emotion.id]: parseInt(e.target.value)
+                        }))}
+                        className="w-full h-2 rounded-lg appearance-none cursor-pointer"
+                        style={{
+                          background: `linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) ${emotionValues[emotion.id]}%, hsl(var(--muted)) ${emotionValues[emotion.id]}%, hsl(var(--muted)) 100%)`
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
 
             {/* Generate Button */}
             <Button
@@ -418,49 +468,6 @@ export default function BasicInfo() {
             <p className="text-sm text-center text-muted-foreground">
               Tip: Adjust emotion controls to change the tone of your content
             </p>
-          </div>
-        </Card>
-
-        {/* Pro Tips */}
-        <Card className="p-6 mb-8 bg-card">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Lightbulb className="h-6 w-6 text-primary" />
-            </div>
-            <h2 className="text-xl font-semibold">Pro tips for better results</h2>
-          </div>
-
-          <div className="space-y-3">
-            <div className="flex gap-3">
-              <Target className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-foreground">
-                <span className="font-medium">Lead with outcomes:</span> Tell fans what they'll get (e.g., "weekly behind-the-scenes + early drops").
-              </p>
-            </div>
-            <div className="flex gap-3">
-              <Calendar className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-foreground">
-                <span className="font-medium">Add specifics:</span> Mention format or cadence ("2 live sessions/month").
-              </p>
-            </div>
-            <div className="flex gap-3">
-              <MessageSquare className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-foreground">
-                <span className="font-medium">Match your tone to your niche:</span> Casual/Fun for lifestyle; Serious/Casual for education.
-              </p>
-            </div>
-            <div className="flex gap-3">
-              <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-foreground">
-                <span className="font-medium">Keep it short:</span> 1–2 short paragraphs convert best.
-              </p>
-            </div>
-            <div className="flex gap-3">
-              <RefreshCw className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-foreground">
-                <span className="font-medium">Iterate:</span> Tweak sliders and regenerate to compare variants.
-              </p>
-            </div>
           </div>
         </Card>
 
