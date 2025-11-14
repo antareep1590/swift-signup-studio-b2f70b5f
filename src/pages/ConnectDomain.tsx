@@ -19,23 +19,31 @@ import {
   Zap
 } from "lucide-react";
 
-type Step = "provider" | "namecheap-options" | "auto-setup" | "manual-setup";
-type DomainProvider = "namecheap" | "other" | null;
+type Step = "initial" | "connect-form" | "setup-options" | "auto-setup" | "manual-setup";
+type DomainProvider = "namecheap" | "others" | null;
 
 const ConnectDomain = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [currentStep, setCurrentStep] = useState<Step>("provider");
+  const [currentStep, setCurrentStep] = useState<Step>("initial");
   const [selectedProvider, setSelectedProvider] = useState<DomainProvider>(null);
   const [customDomain, setCustomDomain] = useState("");
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
 
-  const handleProviderSelect = (provider: DomainProvider) => {
-    setSelectedProvider(provider);
-    if (provider === "namecheap") {
-      setCurrentStep("namecheap-options");
+  const handleConnectDomain = () => {
+    if (!customDomain || !selectedProvider) {
+      toast({
+        title: "Missing information",
+        description: "Please select a provider and enter your domain",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (selectedProvider === "namecheap") {
+      setCurrentStep("setup-options");
     } else {
       setCurrentStep("manual-setup");
     }
@@ -121,86 +129,131 @@ const ConnectDomain = () => {
           </p>
         </div>
 
-        {/* Step 1: Provider Selection */}
-        {currentStep === "provider" && (
+        {/* Step 1: Initial Selection */}
+        {currentStep === "initial" && (
           <div className="space-y-6">
-            <Card className="p-6 bg-card">
-              <h2 className="text-2xl font-semibold mb-2">Where is your domain registered?</h2>
-              <p className="text-muted-foreground mb-6">
-                We'll guide you based on your provider
-              </p>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                {/* Namecheap Option */}
-                <Card
-                  className="p-6 cursor-pointer transition-all hover:shadow-lg hover:border-primary/50 border-2"
-                  onClick={() => handleProviderSelect("namecheap")}
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 bg-orange-100 dark:bg-orange-900/20 rounded-lg">
-                      <Globe className="h-8 w-8 text-orange-600 dark:text-orange-400" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold mb-2">Namecheap</h3>
-                      <div className="flex items-center gap-2 mb-3">
-                        <Zap className="h-4 w-4 text-primary" />
-                        <p className="text-sm font-medium text-primary">
-                          Instant verification & automatic DNS setup available
-                        </p>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Connect your Namecheap account for the fastest setup
-                      </p>
-                    </div>
-                    <ArrowRight className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Purchase New Domain */}
+              <Card className="p-8 cursor-pointer transition-all hover:shadow-lg hover:border-primary/50 border-2">
+                <div className="text-center">
+                  <div className="p-4 bg-primary/10 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <Globe className="h-8 w-8 text-primary" />
                   </div>
-                </Card>
+                  <h3 className="text-xl font-semibold mb-2">Purchase a New Domain</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Don't have a domain? You can buy one from us
+                  </p>
+                  <Button variant="outline" className="w-full">
+                    Buy Domain
+                  </Button>
+                </div>
+              </Card>
 
-                {/* Other Providers Option */}
-                <Card
-                  className="p-6 cursor-pointer transition-all hover:shadow-lg hover:border-primary/50 border-2"
-                  onClick={() => handleProviderSelect("other")}
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 bg-primary/10 rounded-lg">
-                      <ExternalLink className="h-8 w-8 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold mb-2">Other Providers</h3>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        Use manual DNS setup in your provider dashboard
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Works with GoDaddy, Cloudflare, Google Domains, and more
-                      </p>
-                    </div>
-                    <ArrowRight className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+              {/* Connect Your Domain */}
+              <Card className="p-8 cursor-pointer transition-all hover:shadow-lg hover:border-primary/50 border-2">
+                <div className="text-center">
+                  <div className="p-4 bg-primary/10 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <ExternalLink className="h-8 w-8 text-primary" />
                   </div>
-                </Card>
+                  <h3 className="text-xl font-semibold mb-2">Connect Your Domain</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Already have a domain? Connect it here
+                  </p>
+                  <Button 
+                    onClick={() => setCurrentStep("connect-form")} 
+                    className="w-full"
+                  >
+                    Connect Domain
+                  </Button>
+                </div>
+              </Card>
+            </div>
+          </div>
+        )}
+
+        {/* Step 2: Connect Form */}
+        {currentStep === "connect-form" && (
+          <div className="space-y-6">
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setCurrentStep("initial");
+                setSelectedProvider(null);
+                setCustomDomain("");
+              }}
+              className="mb-4"
+            >
+              ← Back
+            </Button>
+
+            <Card className="p-8 bg-card max-w-2xl mx-auto">
+              <h2 className="text-2xl font-semibold mb-6">Connect Your Domain</h2>
+              
+              <div className="space-y-6">
+                {/* Domain Provider Dropdown */}
+                <div>
+                  <Label htmlFor="provider" className="text-base font-medium mb-2">
+                    Domain Provider
+                  </Label>
+                  <select
+                    id="provider"
+                    value={selectedProvider || ""}
+                    onChange={(e) => setSelectedProvider(e.target.value as DomainProvider)}
+                    className="w-full h-12 px-4 rounded-md border border-input bg-background text-foreground"
+                  >
+                    <option value="">Select your provider</option>
+                    <option value="namecheap">Namecheap</option>
+                    <option value="others">Others (GoDaddy, Cloudflare, etc.)</option>
+                  </select>
+                </div>
+
+                {/* Domain Input */}
+                <div>
+                  <Label htmlFor="domain" className="text-base font-medium mb-2">
+                    Enter Your Domain
+                  </Label>
+                  <Input
+                    id="domain"
+                    value={customDomain}
+                    onChange={(e) => setCustomDomain(e.target.value)}
+                    placeholder="myclinic.com"
+                    className="text-lg h-12"
+                  />
+                </div>
+
+                <Button 
+                  onClick={handleConnectDomain}
+                  disabled={!customDomain || !selectedProvider}
+                  className="w-full h-12 text-base"
+                  size="lg"
+                >
+                  Continue
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
               </div>
             </Card>
           </div>
         )}
 
-        {/* Step 2: Namecheap Options */}
-        {currentStep === "namecheap-options" && (
+        {/* Step 3: Setup Options (Namecheap only) */}
+        {currentStep === "setup-options" && (
           <div className="space-y-6">
             <Button
               variant="ghost"
-              onClick={() => setCurrentStep("provider")}
+              onClick={() => setCurrentStep("connect-form")}
               className="mb-4"
             >
-              ← Back to providers
+              ← Back
             </Button>
 
-            <Card className="p-6 bg-card">
+            <Card className="p-8 bg-card max-w-2xl mx-auto">
               <h2 className="text-2xl font-semibold mb-2">Choose Setup Method</h2>
               <p className="text-muted-foreground mb-6">
-                Select how you'd like to connect your Namecheap domain
+                How would you like to set up {customDomain}?
               </p>
 
               <div className="space-y-4">
-                {/* Auto Setup - Recommended */}
+                {/* Auto Setup */}
                 <Card
                   className="p-6 cursor-pointer transition-all hover:shadow-lg border-2 border-primary bg-primary/5"
                   onClick={handleAutoSetup}
@@ -212,18 +265,14 @@ const ConnectDomain = () => {
                       </div>
                       <div>
                         <div className="flex items-center gap-2 mb-2">
-                          <h3 className="text-lg font-semibold">Connect Namecheap Automatically</h3>
+                          <h3 className="text-lg font-semibold">Auto Setup</h3>
                           <span className="px-2 py-0.5 bg-primary text-primary-foreground text-xs font-medium rounded-full">
                             Recommended
                           </span>
                         </div>
-                        <p className="text-sm text-muted-foreground mb-2">
-                          We'll authenticate your Namecheap account and configure DNS for you
+                        <p className="text-sm text-muted-foreground">
+                          Connect in under 2 minutes with automatic DNS configuration
                         </p>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <Shield className="h-3 w-3" />
-                          <span>Secure OAuth authentication</span>
-                        </div>
                       </div>
                     </div>
                     <ArrowRight className="h-5 w-5 text-primary flex-shrink-0 mt-1" />
@@ -243,7 +292,7 @@ const ConnectDomain = () => {
                       <div>
                         <h3 className="text-lg font-semibold mb-2">Manual Setup</h3>
                         <p className="text-sm text-muted-foreground">
-                          Add DNS records yourself in Namecheap's dashboard
+                          Configure DNS yourself
                         </p>
                       </div>
                     </div>
@@ -255,12 +304,12 @@ const ConnectDomain = () => {
           </div>
         )}
 
-        {/* Step 3: Auto Setup */}
+        {/* Step 4: Auto Setup */}
         {currentStep === "auto-setup" && (
           <div className="space-y-6">
             <Button
               variant="ghost"
-              onClick={() => setCurrentStep("namecheap-options")}
+              onClick={() => setCurrentStep("setup-options")}
               className="mb-4"
             >
               ← Back
@@ -323,47 +372,31 @@ const ConnectDomain = () => {
           </div>
         )}
 
-        {/* Step 4: Manual Setup */}
+        {/* Step 5: Manual Setup */}
         {currentStep === "manual-setup" && (
           <div className="space-y-6">
-            {selectedProvider === "namecheap" && (
-              <Button
-                variant="ghost"
-                onClick={() => setCurrentStep("namecheap-options")}
-                className="mb-4"
-              >
-                ← Back
-              </Button>
-            )}
-            {selectedProvider === "other" && (
-              <Button
-                variant="ghost"
-                onClick={() => setCurrentStep("provider")}
-                className="mb-4"
-              >
-                ← Back to providers
-              </Button>
-            )}
+            <Button
+              variant="ghost"
+              onClick={() => {
+                if (selectedProvider === "namecheap") {
+                  setCurrentStep("setup-options");
+                } else {
+                  setCurrentStep("connect-form");
+                }
+              }}
+              className="mb-4"
+            >
+              ← Back
+            </Button>
 
-            <Card className="p-8 bg-card">(
+            <Card className="p-8 bg-card max-w-3xl mx-auto">
               <h2 className="text-2xl font-semibold mb-2">Manual DNS Setup</h2>
-              <p className="text-muted-foreground mb-6">
-                Configure your domain's DNS settings to point to our platform
+              <p className="text-muted-foreground mb-2">
+                Configure DNS for <strong>{customDomain}</strong>
               </p>
-
-              {/* Domain Input */}
-              <div className="mb-6">
-                <Label htmlFor="customDomain" className="text-base font-medium mb-2">
-                  Enter your domain
-                </Label>
-                <Input
-                  id="customDomain"
-                  value={customDomain}
-                  onChange={(e) => setCustomDomain(e.target.value)}
-                  placeholder="myclinic.com"
-                  className="text-lg"
-                />
-              </div>
+              <p className="text-sm text-muted-foreground mb-6">
+                Add these DNS records in your {selectedProvider === "namecheap" ? "Namecheap" : "domain provider's"} dashboard
+              </p>
 
               {/* DNS Configuration */}
               <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 mb-6">
