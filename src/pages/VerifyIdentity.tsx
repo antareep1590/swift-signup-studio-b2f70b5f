@@ -119,18 +119,7 @@ export default function VerifyIdentity() {
       return;
     }
 
-    setIsProcessing(true);
     setVerificationStatus("in_progress");
-
-    // Simulate SDK initialization
-    setTimeout(() => {
-      setIsProcessing(false);
-      setVerificationStatus("submitted");
-      toast({
-        title: "Verification submitted",
-        description: "Your identity is being verified. This typically takes 2-3 minutes."
-      });
-    }, 2000);
   };
 
   const handleSkipForNow = () => {
