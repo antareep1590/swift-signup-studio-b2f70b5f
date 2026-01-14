@@ -16,11 +16,31 @@ import {
   Loader2,
   ArrowRight,
   Shield,
-  Zap
+  Zap,
+  Search,
+  CreditCard,
+  Clock,
+  Lock
 } from "lucide-react";
 
-type Step = "initial" | "connect-form" | "setup-options" | "auto-setup" | "manual-setup";
+type Step = 
+  | "initial" 
+  | "connect-form" 
+  | "setup-options" 
+  | "auto-setup" 
+  | "manual-setup"
+  | "search-domain"
+  | "payment"
+  | "purchase-success";
+
 type DomainProvider = "namecheap" | "others" | null;
+
+interface DomainResult {
+  domain: string;
+  available: boolean;
+  price: number;
+  renewalPrice: number;
+}
 
 const ConnectDomain = () => {
   const navigate = useNavigate();
@@ -31,6 +51,22 @@ const ConnectDomain = () => {
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
+  
+  // Purchase domain states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [domainResults, setDomainResults] = useState<DomainResult[]>([]);
+  const [selectedDomain, setSelectedDomain] = useState<DomainResult | null>(null);
+  const [purchasedDomain, setPurchasedDomain] = useState<string>("");
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  
+  // Card details state
+  const [cardDetails, setCardDetails] = useState({
+    cardNumber: "",
+    expiryDate: "",
+    cvv: "",
+    cardholderName: ""
+  });
 
   const handleConnectDomain = () => {
     if (!customDomain || !selectedProvider) {
@@ -59,14 +95,12 @@ const ConnectDomain = () => {
 
   const handleNamecheapConnect = () => {
     setIsConnecting(true);
-    // Simulate OAuth/API connection
     setTimeout(() => {
       setIsConnecting(false);
       toast({
         title: "Connected to Namecheap!",
         description: "Select a domain from your account"
       });
-      // In real implementation, show domain dropdown here
     }, 2000);
   };
 
@@ -108,6 +142,62 @@ const ConnectDomain = () => {
     }, 3000);
   };
 
+  // Purchase domain handlers
+  const handleSearchDomain = () => {
+    if (!searchQuery.trim()) {
+      toast({
+        title: "Enter a domain",
+        description: "Please enter a domain name to search",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsSearching(true);
+    
+    // Simulate domain search
+    setTimeout(() => {
+      const baseDomain = searchQuery.replace(/\.(com|net|org|io|co)$/i, "").trim();
+      const results: DomainResult[] = [
+        { domain: `${baseDomain}.com`, available: Math.random() > 0.3, price: 12.99, renewalPrice: 15.99 },
+        { domain: `${baseDomain}.net`, available: true, price: 11.99, renewalPrice: 14.99 },
+        { domain: `${baseDomain}.org`, available: true, price: 10.99, renewalPrice: 13.99 },
+        { domain: `${baseDomain}.io`, available: true, price: 39.99, renewalPrice: 49.99 },
+        { domain: `${baseDomain}.co`, available: Math.random() > 0.5, price: 24.99, renewalPrice: 29.99 },
+      ];
+      setDomainResults(results);
+      setIsSearching(false);
+    }, 1500);
+  };
+
+  const handleSelectDomain = (domain: DomainResult) => {
+    setSelectedDomain(domain);
+    setCurrentStep("payment");
+  };
+
+  const handlePurchaseDomain = () => {
+    if (!cardDetails.cardNumber || !cardDetails.expiryDate || !cardDetails.cvv || !cardDetails.cardholderName) {
+      toast({
+        title: "Missing card details",
+        description: "Please fill in all card details",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsProcessingPayment(true);
+    
+    setTimeout(() => {
+      setIsProcessingPayment(false);
+      setPurchasedDomain(selectedDomain?.domain || "");
+      setCurrentStep("purchase-success");
+      toast({
+        title: "Domain purchased successfully! 🎉",
+        description: `${selectedDomain?.domain} is now yours`
+      });
+    }, 2500);
+  };
+
   const steps = [
     { id: 1, name: "Verify Identity", path: "/onboarding/verify-identity" },
     { id: 2, name: "Customize Branding", path: "/onboarding/basic-info" },
@@ -143,7 +233,11 @@ const ConnectDomain = () => {
                   <p className="text-sm text-muted-foreground mb-4">
                     Don't have a domain? You can buy one from us
                   </p>
-                  <Button variant="outline" className="w-full">
+                  <Button 
+                    onClick={() => setCurrentStep("search-domain")}
+                    variant="outline" 
+                    className="w-full"
+                  >
                     Buy Domain
                   </Button>
                 </div>
@@ -167,6 +261,327 @@ const ConnectDomain = () => {
                   </Button>
                 </div>
               </Card>
+            </div>
+          </div>
+        )}
+
+        {/* Search Domain Step */}
+        {currentStep === "search-domain" && (
+          <div className="space-y-6">
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setCurrentStep("initial");
+                setSearchQuery("");
+                setDomainResults([]);
+                setSelectedDomain(null);
+              }}
+              className="mb-4"
+            >
+              ← Back
+            </Button>
+
+            <Card className="p-8 bg-card max-w-2xl mx-auto">
+              <h2 className="text-2xl font-semibold mb-2">Find Your Perfect Domain</h2>
+              <p className="text-muted-foreground mb-6">
+                Search for available domain names
+              </p>
+
+              {/* Search Input */}
+              <div className="flex gap-3 mb-6">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Enter domain name (e.g., myclinic)"
+                    className="pl-10 h-12 text-lg"
+                    onKeyDown={(e) => e.key === "Enter" && handleSearchDomain()}
+                  />
+                </div>
+                <Button 
+                  onClick={handleSearchDomain}
+                  disabled={isSearching}
+                  className="h-12 px-6"
+                >
+                  {isSearching ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  ) : (
+                    "Search"
+                  )}
+                </Button>
+              </div>
+
+              {/* Search Results */}
+              {isSearching && (
+                <div className="text-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary mb-3" />
+                  <p className="text-muted-foreground">Searching available domains...</p>
+                </div>
+              )}
+
+              {!isSearching && domainResults.length > 0 && (
+                <div className="space-y-3">
+                  <p className="text-sm font-medium text-muted-foreground mb-4">
+                    {domainResults.filter(d => d.available).length} domains available
+                  </p>
+                  
+                  {domainResults.map((result) => (
+                    <div
+                      key={result.domain}
+                      className={`p-4 rounded-lg border-2 transition-all ${
+                        result.available 
+                          ? "bg-background hover:border-primary/50 cursor-pointer" 
+                          : "bg-muted/50 opacity-60"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          {result.available ? (
+                            <CheckCircle className="h-5 w-5 text-green-500" />
+                          ) : (
+                            <AlertCircle className="h-5 w-5 text-muted-foreground" />
+                          )}
+                          <div>
+                            <p className="font-semibold text-lg">{result.domain}</p>
+                            {result.available && (
+                              <p className="text-xs text-muted-foreground">
+                                Renews at ${result.renewalPrice}/year
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-4">
+                          {result.available ? (
+                            <>
+                              <div className="text-right">
+                                <p className="font-bold text-lg text-primary">${result.price}</p>
+                                <p className="text-xs text-muted-foreground">/first year</p>
+                              </div>
+                              <Button 
+                                size="sm"
+                                onClick={() => handleSelectDomain(result)}
+                              >
+                                Purchase
+                              </Button>
+                            </>
+                          ) : (
+                            <span className="text-sm text-muted-foreground">Unavailable</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {!isSearching && domainResults.length === 0 && searchQuery && (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Globe className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                  <p>Enter a domain name and click Search to find available domains</p>
+                </div>
+              )}
+            </Card>
+          </div>
+        )}
+
+        {/* Payment Step */}
+        {currentStep === "payment" && selectedDomain && (
+          <div className="space-y-6">
+            <Button
+              variant="ghost"
+              onClick={() => setCurrentStep("search-domain")}
+              className="mb-4"
+            >
+              ← Back
+            </Button>
+
+            <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+              {/* Order Summary */}
+              <Card className="p-6 bg-card h-fit">
+                <h3 className="text-lg font-semibold mb-4">Order Summary</h3>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <Globe className="h-5 w-5 text-primary" />
+                      <div>
+                        <p className="font-semibold">{selectedDomain.domain}</p>
+                        <p className="text-sm text-muted-foreground">1 year registration</p>
+                      </div>
+                    </div>
+                    <p className="font-bold">${selectedDomain.price}</p>
+                  </div>
+
+                  <div className="border-t pt-4">
+                    <div className="flex justify-between text-sm mb-2">
+                      <span className="text-muted-foreground">Subtotal</span>
+                      <span>${selectedDomain.price}</span>
+                    </div>
+                    <div className="flex justify-between text-sm mb-2">
+                      <span className="text-muted-foreground">DNS Setup</span>
+                      <span className="text-green-600">Free</span>
+                    </div>
+                    <div className="flex justify-between text-sm mb-2">
+                      <span className="text-muted-foreground">SSL Certificate</span>
+                      <span className="text-green-600">Free</span>
+                    </div>
+                    <div className="flex justify-between font-bold text-lg pt-2 border-t">
+                      <span>Total</span>
+                      <span className="text-primary">${selectedDomain.price}</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-primary/5 rounded-lg text-sm text-muted-foreground">
+                    <p className="flex items-center gap-2">
+                      <Clock className="h-4 w-4" />
+                      Renews at ${selectedDomain.renewalPrice}/year
+                    </p>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Payment Form */}
+              <Card className="p-6 bg-card">
+                <div className="flex items-center gap-2 mb-6">
+                  <CreditCard className="h-5 w-5 text-primary" />
+                  <h3 className="text-lg font-semibold">Payment Details</h3>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="cardholderName" className="text-sm font-medium">
+                      Cardholder Name
+                    </Label>
+                    <Input
+                      id="cardholderName"
+                      value={cardDetails.cardholderName}
+                      onChange={(e) => setCardDetails({ ...cardDetails, cardholderName: e.target.value })}
+                      placeholder="John Doe"
+                      className="mt-1"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="cardNumber" className="text-sm font-medium">
+                      Card Number
+                    </Label>
+                    <Input
+                      id="cardNumber"
+                      value={cardDetails.cardNumber}
+                      onChange={(e) => setCardDetails({ ...cardDetails, cardNumber: e.target.value })}
+                      placeholder="1234 5678 9012 3456"
+                      className="mt-1"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="expiryDate" className="text-sm font-medium">
+                        Expiry Date
+                      </Label>
+                      <Input
+                        id="expiryDate"
+                        value={cardDetails.expiryDate}
+                        onChange={(e) => setCardDetails({ ...cardDetails, expiryDate: e.target.value })}
+                        placeholder="MM/YY"
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="cvv" className="text-sm font-medium">
+                        CVV
+                      </Label>
+                      <Input
+                        id="cvv"
+                        value={cardDetails.cvv}
+                        onChange={(e) => setCardDetails({ ...cardDetails, cvv: e.target.value })}
+                        placeholder="123"
+                        className="mt-1"
+                      />
+                    </div>
+                  </div>
+
+                  <Button 
+                    onClick={handlePurchaseDomain}
+                    disabled={isProcessingPayment}
+                    className="w-full h-12 text-base mt-4"
+                    size="lg"
+                  >
+                    {isProcessingPayment ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Processing Payment...
+                      </>
+                    ) : (
+                      <>
+                        <Lock className="mr-2 h-5 w-5" />
+                        Pay ${selectedDomain.price}
+                      </>
+                    )}
+                  </Button>
+
+                  <p className="text-xs text-center text-muted-foreground flex items-center justify-center gap-1">
+                    <Lock className="h-3 w-3" />
+                    Secured with 256-bit SSL encryption
+                  </p>
+                </div>
+              </Card>
+            </div>
+          </div>
+        )}
+
+        {/* Purchase Success Step */}
+        {currentStep === "purchase-success" && (
+          <div className="space-y-6">
+            <Card className="p-8 bg-primary/5 border-primary/20 max-w-2xl mx-auto">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full">
+                    <CheckCircle className="h-6 w-6 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold">Your domain purchase was successful</h3>
+                    <p className="text-primary font-medium">{purchasedDomain}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-full">
+                  <Clock className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm font-medium text-blue-600">Propagation in progress</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 text-muted-foreground mb-6">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span className="text-sm">DNS setup is in progress. This may take a few hours.</span>
+              </div>
+
+              {/* URL Cards */}
+              <div className="grid md:grid-cols-2 gap-4 mb-6">
+                <div className="p-4 bg-background border rounded-lg opacity-70">
+                  <p className="text-sm text-muted-foreground mb-1">Customer facing website</p>
+                  <p className="font-mono text-sm text-muted-foreground">https://{purchasedDomain}</p>
+                </div>
+                <div className="p-4 bg-background border rounded-lg opacity-70">
+                  <p className="text-sm text-muted-foreground mb-1">Admin Portal</p>
+                  <p className="font-mono text-sm text-muted-foreground">https://{purchasedDomain}/admin</p>
+                </div>
+              </div>
+
+              {/* Info Message */}
+              <div className="p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <p className="text-sm text-blue-700 dark:text-blue-300 text-center font-medium">
+                  Your URLs will become active once you complete all the remaining steps and launch your platform successfully.
+                </p>
+              </div>
+            </Card>
+
+            <div className="flex items-center justify-center gap-2 text-muted-foreground text-sm">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <span>You'll also receive an email once your platform is live.</span>
             </div>
           </div>
         )}
@@ -529,12 +944,18 @@ const ConnectDomain = () => {
           <Button variant="outline" onClick={() => navigate("/onboarding/payment")}>
             Back
           </Button>
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate("/onboarding/stripe-access")}
-          >
-            Skip for now
-          </Button>
+          {currentStep === "purchase-success" ? (
+            <Button onClick={() => navigate("/onboarding/stripe-access")}>
+              Continue
+            </Button>
+          ) : (
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate("/onboarding/stripe-access")}
+            >
+              Skip for now
+            </Button>
+          )}
         </div>
       </div>
     </OnboardingLayout>
